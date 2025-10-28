@@ -1,6 +1,6 @@
 package com.group3.SWD392_FALL25.service;
 
-import com.group3.SWD392_FALL25.dto.LoginResponse;
+import com.group3.SWD392_FALL25.dto.response.LoginResponse;
 import com.group3.SWD392_FALL25.entity.Admin;
 import com.group3.SWD392_FALL25.entity.Customer;
 import com.group3.SWD392_FALL25.repository.AdminRepository;
@@ -22,14 +22,14 @@ public class AuthService {
     public LoginResponse login(String username, String password) {
         Optional<Admin> adminOpt = adminRepo.findByUsername(username);
         if (adminOpt.isPresent() && adminOpt.get().getPassword().equals(password)) {
-            return new LoginResponse("admin", adminOpt.get().getUsername());
+            return new LoginResponse(adminOpt.get().getRole(), adminOpt.get().getUsername());
         }
 
         Optional<Customer> cusOpt = customerRepo.findByUsername(username);
         if (cusOpt.isPresent() && cusOpt.get().getPassword().equals(password)) {
-            return new LoginResponse("customer", cusOpt.get().getUsername());
+            return new LoginResponse(cusOpt.get().getRole(), cusOpt.get().getUsername());
         }
 
-        return null; // sai thông tin đăng nhập
+        return null;
     }
 }

@@ -1,4 +1,4 @@
-package com.group3.SWD392_FALL25.dto;
+package com.group3.SWD392_FALL25.dto.request;
 
 import lombok.Data;
 
