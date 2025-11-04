@@ -19,7 +19,10 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    String image;
+    @Column(name = "title", columnDefinition = "NVARCHAR(255)")
     String title;
+    @Column(name = "description", columnDefinition = "NVARCHAR(255)")
     String description;
 
     @Column(name = "duration_min")

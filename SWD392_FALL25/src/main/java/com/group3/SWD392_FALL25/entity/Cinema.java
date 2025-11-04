@@ -19,7 +19,9 @@ public class Cinema {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(name = "name", columnDefinition = "NVARCHAR(255)")
     String name;
+    @Column(name = "province", columnDefinition = "NVARCHAR(255)")
     String province;
 
     @ManyToOne

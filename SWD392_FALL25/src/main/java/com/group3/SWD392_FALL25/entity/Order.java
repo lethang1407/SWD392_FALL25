@@ -21,8 +21,8 @@ public class Order {
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id") // đổi từ user_id
-    Customer customer;
+    @JoinColumn(name = "customer_id")
+    Account customer;
 
     String status;
     double totalVnd;

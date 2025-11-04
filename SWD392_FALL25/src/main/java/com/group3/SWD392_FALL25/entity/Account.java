@@ -11,10 +11,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "Admin")
-public class Admin {
+@Table(name = "Account")
+public class Account {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
     @Column(unique = true, nullable = false)
@@ -23,6 +23,7 @@ public class Admin {
     @Column(nullable = false)
     String password;
 
+    @Column(nullable = false)
     String role;
 
     @Column(nullable = false, columnDefinition = "NVARCHAR(255)")

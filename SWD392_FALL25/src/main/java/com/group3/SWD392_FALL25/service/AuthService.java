@@ -1,10 +1,11 @@
 package com.group3.SWD392_FALL25.service;
 
+import com.group3.SWD392_FALL25.dto.ApiResponse;
+import com.group3.SWD392_FALL25.dto.request.LoginRequest;
 import com.group3.SWD392_FALL25.dto.response.LoginResponse;
-import com.group3.SWD392_FALL25.entity.Admin;
-import com.group3.SWD392_FALL25.entity.Customer;
-import com.group3.SWD392_FALL25.repository.AdminRepository;
-import com.group3.SWD392_FALL25.repository.CustomerRepository;
+import com.group3.SWD392_FALL25.entity.Account;
+import com.group3.SWD392_FALL25.repository.AccountRepository;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,22 +15,66 @@ import java.util.Optional;
 public class AuthService {
 
     @Autowired
-    private AdminRepository adminRepo;
+    private AccountRepository accountRepo;
 
-    @Autowired
-    private CustomerRepository customerRepo;
+    public ApiResponse<LoginResponse> handleLogin(LoginRequest request, HttpSession session) {
+        Optional<Account> accountOpt = accountRepo.findByUsername(request.getUsername());
 
-    public LoginResponse login(String username, String password) {
-        Optional<Admin> adminOpt = adminRepo.findByUsername(username);
-        if (adminOpt.isPresent() && adminOpt.get().getPassword().equals(password)) {
-            return new LoginResponse(adminOpt.get().getRole(), adminOpt.get().getUsername());
+        if (accountOpt.isEmpty()) {
+            return ApiResponse.<LoginResponse>builder()
+                    .code(401)
+                    .message("Invalid username or password")
+                    .build();
         }
 
-        Optional<Customer> cusOpt = customerRepo.findByUsername(username);
-        if (cusOpt.isPresent() && cusOpt.get().getPassword().equals(password)) {
-            return new LoginResponse(cusOpt.get().getRole(), cusOpt.get().getUsername());
+        Account account = accountOpt.get();
+        if (!account.getPassword().equals(request.getPassword())) {
+            return ApiResponse.<LoginResponse>builder()
+                    .code(401)
+                    .message("Invalid username or password")
+                    .build();
         }
 
-        return null;
+        LoginResponse loginResponse = new LoginResponse(account.getRole(), account.getUsername());
+
+        session.setAttribute("user", loginResponse);
+        session.setMaxInactiveInterval(24 * 60 * 60);
+
+        return ApiResponse.<LoginResponse>builder()
+                .code(200)
+                .message("Login successful")
+                .data(loginResponse)
+                .build();
+    }
+
+    public ApiResponse<String> handleLogout(HttpSession session) {
+        try {
+            session.invalidate();
+            return ApiResponse.<String>builder()
+                    .code(200)
+                    .message("Logout successful")
+                    .data("Session cleared successfully.")
+                    .build();
+        } catch (Exception e) {
+            return ApiResponse.<String>builder()
+                    .code(500)
+                    .message("Logout failed: " + e.getMessage())
+                    .build();
+        }
+    }
+
+    public ApiResponse<LoginResponse> getCurrentUser(HttpSession session) {
+        LoginResponse user = (LoginResponse) session.getAttribute("user");
+        if (user != null) {
+            return ApiResponse.<LoginResponse>builder()
+                    .code(200)
+                    .message("User is logged in")
+                    .data(user)
+                    .build();
+        }
+        return ApiResponse.<LoginResponse>builder()
+                .code(401)
+                .message("No active session or user not logged in")
+                .build();
     }
 }

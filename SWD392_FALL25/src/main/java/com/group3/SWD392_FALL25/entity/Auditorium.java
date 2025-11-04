@@ -19,7 +19,9 @@ public class Auditorium {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(name = "name", columnDefinition = "NVARCHAR(255)")
     String name;
+    @Column(name = "room_type", columnDefinition = "NVARCHAR(255)")
     String roomType;
 
     @ManyToOne
