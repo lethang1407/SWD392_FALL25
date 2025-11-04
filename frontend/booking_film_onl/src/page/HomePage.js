@@ -61,7 +61,13 @@ const HomePage = () => {
                 <Card className="shadow-sm h-100">
                   <Card.Img
                     variant="top"
-                    src={movie.image || "https://via.placeholder.com/300x400?text=No+Image"}
+                    src={
+                      movie.image
+                        ? movie.image.startsWith("http")
+                          ? movie.image
+                          : `/assets/${movie.image}`
+                        : `/assets/no-image.jpg`
+                    }
                     alt={movie.title}
                     style={{ height: "380px", objectFit: "cover" }}
                   />

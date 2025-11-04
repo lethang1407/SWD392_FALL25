@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Showtime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Long id;
 
     @ManyToOne
     @JoinColumn(name = "movie_id")
